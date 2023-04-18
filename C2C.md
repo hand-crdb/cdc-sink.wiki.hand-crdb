@@ -121,7 +121,7 @@ CREATE TABLE _timestamps_
 )
 ```
 
-## Changefeed replication
+## Starting Changefeed Replication
 
 ```text
 Usage:
@@ -208,3 +208,19 @@ cockroach workload run ycsb 'postgresql://root@localhost:30000/ycsb?sslmode=disa
 cockroach sql --port 30000 --insecure -e "select * from ycsb.usertable"
 cockroach sql --port 30002 --insecure -e "select * from ycsb.usertable"
 ```
+
+### Backfill mode
+
+The `--backfillWindow` flag can be used with logical-replication modes to ignore source transaction
+boundaries if the replication lag exceeds a certain threshold or when first populating data into the
+target database. This flag is useful when `cdc-sink` is not expected to be run continuously and will
+need to catch up to the current state in the source database.
+
+### Immediate mode
+
+Immediate mode writes incoming mutations to the target schema as soon as they are received, instead
+of waiting for a resolved timestamp. Transaction boundaries from the source database will not be
+preserved, but overall load on the destination database will be reduced. This sacrifices transaction
+atomicity for performance, and may be appropriate in eventually-consistency use cases.
+
+Immediate mode is enabled by passing the `--immediate` flag.
