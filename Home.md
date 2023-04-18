@@ -2,5 +2,4 @@ cdc-sink is a toolkit for consuming a variety of logical replication feeds and i
 
 ***This is a prototype and is not supported by Cockroach Labs except by prior arrangement.***
 
-We cannot provide support for it at this time but may in the future. Use of this tool is entirely at
-your own risk and Cockroach Labs makes no guarantees or warranties about its operation.
+Use of this tool is entirely at your own risk and Cockroach Labs makes no guarantees or warranties about its operation.
