@@ -224,3 +224,33 @@ preserved, but overall load on the destination database will be reduced. This sa
 atomicity for performance, and may be appropriate in eventually-consistency use cases.
 
 Immediate mode is enabled by passing the `--immediate` flag.
+
+## Limitations
+
+Note that while limitation exist, cdc-sink makes an effort to detect these cases and will push back on the source changefeed if there is a chance that incoming data cannot be entirely applied to the destination.
+
+- all the limitations from CDC hold true.
+  - See <https://www.cockroachlabs.com/docs/dev/change-data-capture.html#known-limitations>
+- schema changes do not work,
+  - in order to perform a schema change
+    1. stop the change feed
+    2. stop cdc-sink
+    3. make the schema changes to both tables
+    4. start cdc-sink
+    5. restart the change feed
+- constraints on the destination table
+  - foreign keys
+    - there is no guarantee that foreign keys between two tables will arrive in the correct
+      order so please only use them on the source table
+    - different table constraints
+      - anything that has a tighter constraint than the original table may break the streaming
+- the schema of the destination table must match the primary table exactly
+
+### Schema Expansions
+
+While the schema of the secondary table must match that of the primary table, specifically the
+primary index. There are some other changes than can be made on the destination side.
+
+- Different and new secondary indexes are allowed.
+- Different zone configs are allowed.
+- Adding new computed columns, that cannot reject any row, should work.
