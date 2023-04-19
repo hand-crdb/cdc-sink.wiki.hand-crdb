@@ -1,0 +1,1 @@
+Use of this tool is entirely at your own risk and Cockroach Labs makes no guarantees or warranties about its operation.
