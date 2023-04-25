@@ -13,8 +13,8 @@ $HOME/go/bin/cdc-sink version
 cdc-sink is packaged as a ready-to run container, available from DockerHub.
 
 ```
-docker pull cockroachdb/cdc-sink
-
+docker pull cockroachdb/cdc-sink:master
+docker run cockroachdb/cdc-sink:master version
 ```
 
 ## Automated builds
