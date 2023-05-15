@@ -246,6 +246,21 @@ Note that while limitation exist, cdc-sink makes an effort to detect these cases
       - anything that has a tighter constraint than the original table may break the streaming
 - the schema of the destination table must match the primary table exactly
 
+### JSONB columns
+
+Due to [limitations](https://github.com/cockroachdb/cockroach/issues/103289) in how JSONB values
+are encoded by CockroachDB, it is not possible to distinguish the SQL `NULL` value from a
+JSONB `null` token. We do not recommend the use of nullable JSONB column if the `null` JSONB token
+may be used as a value.  Instead, it is preferable to declare the destination column as
+`JSONB NOT NULL` and use a [substutite expression](https://github.com/cockroachdb/cdc-sink/wiki/Data-Behaviors#substitute-expressions)
+to replace a SQL `NULL` value with the JSONB `null` token.
+
+```
+UPSERT
+INTO _cdc_sink.apply_config (target_db, target_schema, target_table, target_column, expr)
+VALUES ('my_database', 'public', 'my_table', 'the_jsonb_column', 'COALESCE( $0::JSONB, ''null''::JSONB)');
+```
+
 ### Schema Expansions
 
 While the schema of the secondary table must match that of the primary table, specifically the
