@@ -227,7 +227,7 @@ Immediate mode is enabled by passing the `--immediate` flag.
 
 ## Limitations
 
-Refer to [CockroachDB known limitations[(https://www.cockroachlabs.com/docs/stable/known-limitations.html#change-data-capture-limitations)
+Refer to [CockroachDB known limitations](https://www.cockroachlabs.com/docs/stable/known-limitations.html#change-data-capture-limitations)
 for general limitations on the source changefeeds.
 
 ### Foreign keys
