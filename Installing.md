@@ -19,6 +19,13 @@ docker run cockroachdb/cdc-sink:master version
 
 ## Automated builds
 
-Binaries for a number of platforms are published as artifacts of [successful builds](https://github.com/cockroachdb/cdc-sink/actions/workflows/golang.yaml?query=branch%3Amaster+is%3Asuccess).  Navigate to a recent build and scroll down the page until you see the Artifacts section:
+Binaries for a number of platforms are published as artifacts of [successful builds](https://github.com/cockroachdb/cdc-sink/actions/workflows/binaries.yaml?query=is%3Asuccess+branch%3Amaster).
 
-![Artifacts listing screenshot](https://user-images.githubusercontent.com/1158548/234373883-050f95f9-a3bc-4d28-b728-11caaba41417.png)
+| Platform | Architecture | Link |
+| -------- | ------------ | ---- |
+| Darwin   | AMD64 | [Download](https://storage.googleapis.com/cdc-sink-binaries/cdc-sink-darwin-amd64-master.tgz)
+| Darwin   | ARM64 | [Download](https://storage.googleapis.com/cdc-sink-binaries/cdc-sink-darwin-arm64-master.tgz)
+| Linux    | AMD64 | [Download](https://storage.googleapis.com/cdc-sink-binaries/cdc-sink-linux-amd64-master.tgz)
+| Linux    | ARM64 | [Download](https://storage.googleapis.com/cdc-sink-binaries/cdc-sink-linux-arm64-master.tgz)
+| Windows  | AMD64 | [Download](https://storage.googleapis.com/cdc-sink-binaries/cdc-sink-windows-amd64-master.tgz)
+| Windows  | ARM64 | [Download](https://storage.googleapis.com/cdc-sink-binaries/cdc-sink-windows-arm64-master.tgz)
