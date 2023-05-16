@@ -227,24 +227,15 @@ Immediate mode is enabled by passing the `--immediate` flag.
 
 ## Limitations
 
-Note that while limitation exist, cdc-sink makes an effort to detect these cases and will push back on the source changefeed if there is a chance that incoming data cannot be entirely applied to the destination.
-
-- all the limitations from CDC hold true.
-  - See <https://www.cockroachlabs.com/docs/dev/change-data-capture.html#known-limitations>
-- schema changes do not work,
-  - in order to perform a schema change
-    1. stop the change feed
-    2. stop cdc-sink
-    3. make the schema changes to both tables
-    4. start cdc-sink
-    5. restart the change feed
-- constraints on the destination table
-  - foreign keys
-    - there is no guarantee that foreign keys between two tables will arrive in the correct
-      order so please only use them on the source table
-    - different table constraints
-      - anything that has a tighter constraint than the original table may break the streaming
-- the schema of the destination table must match the primary table exactly
+- All the limitations from CDC hold true.
+  - See [CockroachDB known limitations[(https://www.cockroachlabs.com/docs/stable/known-limitations.html#change-data-capture-limitations).
+- Foreign keys are supported, but do have an additional throughput penalty
+  - cdc-sink will order updates to referent tables before referring tables when the `--foreignKeys` flag is given.
+- Schema changes are not automatically propagated from the source to the destination.
+  - cdc-sink can support live schema changes, but the destination schema must be changed in a coordinated fashion with the source.
+  - Adding columns or tables is possible if they are added first to the destination. New columns must either be nullable or have a `DEFAULT` value, so that the `UPSERT` commands used by cdc-sink need not reference them.
+  - Removing columns or tables should be performed on the source cluster first. The [ignore column](https://github.com/cockroachdb/cdc-sink/wiki/Data-Behaviors#ignore-columns) behavior may also be used.
+  - Adding or removing secondary indexes is generally safe
 
 ### JSONB columns
 
