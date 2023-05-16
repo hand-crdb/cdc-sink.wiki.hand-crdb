@@ -227,15 +227,15 @@ Immediate mode is enabled by passing the `--immediate` flag.
 
 ## Limitations
 
-- All the limitations from CDC hold true.
-  - See [CockroachDB known limitations[(https://www.cockroachlabs.com/docs/stable/known-limitations.html#change-data-capture-limitations).
-- Foreign keys are supported, but do have an additional throughput penalty
-  - cdc-sink will order updates to referent tables before referring tables when the `--foreignKeys` flag is given.
-- Schema changes are not automatically propagated from the source to the destination.
-  - cdc-sink can support live schema changes, but the destination schema must be changed in a coordinated fashion with the source.
-  - Adding columns or tables is possible if they are added first to the destination. New columns must either be nullable or have a `DEFAULT` value, so that the `UPSERT` commands used by cdc-sink need not reference them.
-  - Removing columns or tables should be performed on the source cluster first. The [ignore column](https://github.com/cockroachdb/cdc-sink/wiki/Data-Behaviors#ignore-columns) behavior may also be used.
-  - Adding or removing secondary indexes is generally safe
+Refer to [CockroachDB known limitations[(https://www.cockroachlabs.com/docs/stable/known-limitations.html#change-data-capture-limitations)
+for general limitations on the source changefeeds.
+
+### Foreign keys
+
+- Foreign keys are supported, but do have an additional throughput penalty.
+- cdc-sink will order updates to referent tables before referring tables when the `--foreignKeys` flag is given.
+- Cyclical table dependency graphs are unsupported (and would be difficult to use in CockroachDB without deferrable constraints).
+  - Self-referential tables are supported, provided that a parent row in created in a transaction separate from any child rows.
 
 ### JSONB columns
 
@@ -246,17 +246,18 @@ may be used as a value.  Instead, it is preferable to declare the destination co
 `JSONB NOT NULL` and use a [substutite expression](https://github.com/cockroachdb/cdc-sink/wiki/Data-Behaviors#substitute-expressions)
 to replace a SQL `NULL` value with the JSONB `null` token.
 
-```
+```sql
 UPSERT
 INTO _cdc_sink.apply_config (target_db, target_schema, target_table, target_column, expr)
 VALUES ('my_database', 'public', 'my_table', 'the_jsonb_column', 'COALESCE( $0::JSONB, ''null''::JSONB)');
 ```
 
-### Schema Expansions
+### Schema Changes
 
-While the schema of the secondary table must match that of the primary table, specifically the
-primary index. There are some other changes than can be made on the destination side.
-
-- Different and new secondary indexes are allowed.
+- Schema changes are not automatically propagated from the source to the destination.
+- cdc-sink can support live schema changes, but the destination schema must be changed in a coordinated fashion with the source.
+- Adding columns or tables is possible if they are added first to the destination. New columns must either be nullable or have a `DEFAULT` value, so that the `UPSERT` commands used by cdc-sink need not reference them.
+- Removing columns or tables should be performed on the source cluster first. The [ignore column](https://github.com/cockroachdb/cdc-sink/wiki/Data-Behaviors#ignore-columns) behavior may also be used.
+- Adding or removing secondary indexes is generally safe; cdc-sink does not make use of secondary indexes.
 - Different zone configs are allowed.
 - Adding new computed columns, that cannot reject any row, should work.
