@@ -74,3 +74,7 @@ To clean up from the above:
 
 - `SELECT pg_drop_replication_slot('cdc_sink');`
 - `DROP PUBLICATION my_pub;`
+
+## Additional Information
+
+* Blog: [CDC Sink Replication from PostgreSQL to CockroachDB](https://datasciguy.com/cdc-sink-replication-from-postgresql-to-cockroachdb/)
